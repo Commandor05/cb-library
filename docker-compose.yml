@@ -7,15 +7,20 @@ services:
       dockerfile: nginx.dockerfile
     ports:
       - 80:80
+    networks:
+      - book-net
     volumes:
       - ./:/var/www/html
     depends_on:
+      - database
       - php
 
   php:
     build:
       context: ./docker
       dockerfile: php.dockerfile
+    networks:
+      - book-net
     volumes:
       - ./:/var/www/html
       - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/99-xdebug.ini
@@ -28,6 +33,8 @@ services:
     build:
       context: ./docker
       dockerfile: composer.dockerfile
+    networks:
+      - book-net
     volumes:
       - ./:/var/www/html
     working_dir: /var/www/html
@@ -39,15 +46,6 @@ services:
     entrypoint: ["npm"]
     working_dir: /var/www/html
 
-  console:
-    build:
-      context: ./docker
-      dockerfile: php.dockerfile
-    volumes:
-      - ./:/var/www/html
-    working_dir: /var/www/html
-    entrypoint: ["php", "/var/www/html/bin/console"]
-
   database:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
     environment:
@@ -55,8 +53,29 @@ services:
       # You should definitely change the password in production
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
       POSTGRES_USER: ${POSTGRES_USER:-app}
+    networks:
+      - book-net
+    ports:
+      - 5432:5432
     volumes:
       - database_data:/var/lib/postgresql/data:rw
 
+  console:
+    build:
+      context: ./docker
+      dockerfile: php.dockerfile
+    networks:
+      - book-net
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - database
+    entrypoint: ["php", "/var/www/html/bin/console"]
+
 volumes:
   database_data:
+
+networks:
+  book-net:
+    driver: bridge

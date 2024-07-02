@@ -1,0 +1,7 @@
+version: "4"
+
+services:
+  ###> doctrine/doctrine-bundle ###
+  database:
+    ports:
+      - "5432"
