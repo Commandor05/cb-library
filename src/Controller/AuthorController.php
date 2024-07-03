@@ -66,8 +66,8 @@ class AuthorController extends AbstractController
             $author->setName($requestBody['name']);
             $author->setSurname($requestBody['surname']);
 
-            if (isset($requestBody['second_name'])) {
-                $author->setSecondName($requestBody['second_name']);
+            if (isset($requestBody['secondName'])) {
+                $author->setSecondName($requestBody['secondName']);
             }
 
             $errors = $validator->validate($author);
