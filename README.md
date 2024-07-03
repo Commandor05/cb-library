@@ -114,3 +114,9 @@ Field "key" in form-data for image is "file" // max 2Mb, jpg | png
     "authors": "[1]" //required, multy
 }
 ```
+
+## Swagger
+
+### endpoint: /api/doc
+
+![Swagger](https://prnt.sc/JAOnp1zsoYx0)

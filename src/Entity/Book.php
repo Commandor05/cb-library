@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book
@@ -15,6 +16,7 @@ class Book
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["default"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -22,18 +24,22 @@ class Book
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(["default", "create", "update"])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true, unique: true)]
+    #[Groups(["default", "create", "update"])]
     private ?string $image = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(["default", "create", "update"])]
     private ?\DateTimeInterface $publishedAt = null;
 
     /**
      * @var Collection<int, Author>
      */
     #[ORM\ManyToMany(targetEntity: Author::class, inversedBy: 'books')]
+    #[Groups(["default", "create", "update"])]
     private Collection $authors;
 
     public function __construct()

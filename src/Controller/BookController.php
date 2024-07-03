@@ -14,11 +14,28 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Attributes as OA;
 
 #[Route('/api', name: 'api_')]
 class BookController extends AbstractController
 {
     #[Route('/books', name: 'book_index', methods: ['get'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Returns Books list',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Book::class, groups: ['default']))
+        )
+    )]
+    #[OA\Parameter(
+        name: 'offset',
+        in: 'query',
+        description: 'The field used set pagination offset',
+        schema: new OA\Schema(type: 'string')
+    )]
+    #[OA\Tag(name: 'books')]
     public function index(Request $request, BookRepository $bookRepository): JsonResponse
     {
         $offset = max(0, $request->query->getInt('offset', 0));
@@ -28,6 +45,21 @@ class BookController extends AbstractController
     }
 
     #[Route('/books/author/{surname}', name: 'book_find', methods: ['get'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Returns Books list filtered by Author surname',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Book::class, groups: ['default']))
+        )
+    )]
+    #[OA\Parameter(
+        name: 'offset',
+        in: 'query',
+        description: 'The field used set pagination offset',
+        schema: new OA\Schema(type: 'string')
+    )]
+    #[OA\Tag(name: 'books')]
     public function find(Request $request, string $surname, BookRepository $bookRepository): JsonResponse
     {
         $offset = max(0, $request->query->get('offset', 0));
@@ -37,6 +69,21 @@ class BookController extends AbstractController
     }
 
     #[Route('/books/{id}', name: 'book_show', methods: ['get'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Returns single Book',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Book::class, groups: ['default']))
+        )
+    )]
+    #[OA\Parameter(
+        name: 'offset',
+        in: 'query',
+        description: 'The field used set pagination offset',
+        schema: new OA\Schema(type: 'string')
+    )]
+    #[OA\Tag(name: 'books')]
     public function show(int $id, BookRepository $bookRepository): JsonResponse
     {
         $book = $bookRepository->find($id);
@@ -49,6 +96,15 @@ class BookController extends AbstractController
     }
 
     #[Route('/books', name: 'book_create', methods: ['post'])]
+    #[OA\Response(
+        response: 201,
+        description: 'Returns created book',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Book::class, groups: ['default']))
+        )
+    )]
+    #[OA\Tag(name: 'books')]
     public function create(Request $request, ManagerRegistry $doctrine, ValidatorInterface $validator, ImageUploader $imageUploader, AuthorRepository $authorRepository): JsonResponse
     {
         $entityManager = $doctrine->getManager();
@@ -120,6 +176,15 @@ class BookController extends AbstractController
 
 
     #[Route('/books/{id}', name: 'book_update', methods: ['put'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Returns updated book',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Book::class, groups: ['default']))
+        )
+    )]
+    #[OA\Tag(name: 'books')]
     public function update(Request $request, ManagerRegistry $doctrine, ValidatorInterface $validator, ImageUploader $imageUploader, AuthorRepository $authorRepository, BookRepository $bookRepository, int $id, ): JsonResponse
     {
         $entityManager = $doctrine->getManager();
@@ -200,6 +265,6 @@ class BookController extends AbstractController
             return $this->json(['errors' => ['message' => $error->getMessage()]], Response::HTTP_BAD_REQUEST);
         }
 
-        return $this->json($book, Response::HTTP_CREATED);
+        return $this->json($book);
     }
 }
