@@ -119,4 +119,4 @@ Field "key" in form-data for image is "file" // max 2Mb, jpg | png
 
 ### endpoint: /api/doc
 
-![Swagger](https://prnt.sc/JAOnp1zsoYx0)
+![Swagger](https://img001.prntscr.com/file/img001/4qjqJGlzQw2k8Lsn-iijhA.png)
